@@ -6,14 +6,21 @@ import axios from 'axios'
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FiExternalLink } from "react-icons/fi";
+import Loader from './Loader';
+
 const Experience = ({setExperienceCompActive,experienceCompActive}) => {
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const {data} = await axios.get('https://devkuipid.onrender.com/jobs/')
-        if (data) {
+        
+        const {data,} = await axios.get('https://devkuipid.onrender.com/jobs/')
+        if (!data) {
       
+          setLoading(true)
+        }
+        else  {
+          setLoading(false)
           setJobs(data)
         }
       } catch (error) {
@@ -23,6 +30,7 @@ const Experience = ({setExperienceCompActive,experienceCompActive}) => {
 fetchJobs()
   }, [])
 const [about, setAbout] = useState(false)
+const [loading, setLoading] = useState(true)
   const { ref, inView, entry } = useInView({
     
     /* Optional options */
@@ -44,6 +52,8 @@ const [about, setAbout] = useState(false)
      setExperienceCompActive(false)
     }
   }, [inView])
+  console.log(loading)
+  if ( loading ) return <Loader/> 
   return (
     
     <div   ref={ref} className="mb-20  flex flex-col w-full h-fit text-[#f9e8e8]">

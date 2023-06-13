@@ -7,6 +7,7 @@ import Project from "./components/Projects";
 import {  FaGithub, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
 import './App.css'
 import axios from 'axios'
+import Loader from './components/Loader';
 function App() {
  
   const [experienceCompActive, setExperienceCompActive] = useState(false);
@@ -14,8 +15,8 @@ function App() {
   const [contactCompActive, setContactCompActive] = useState(false);
    
  const [displayedProject, setDisplayeProject] = useState(null)
- 
-  return (
+
+return (
     <>
         <div  className=" relative bg-[#1c0523] px-4 md:px-20 md:flex-row flex flex-col w-full h-fit ">
           { displayedProject && <>
@@ -99,7 +100,7 @@ function App() {
         </div>
 
 <Experience  setExperienceCompActive={setExperienceCompActive}
-
+ 
 experienceCompActive={experienceCompActive}
          />
 <Project setDisplayeProject={setDisplayeProject} setProjectCompActive={setProjectCompActive}

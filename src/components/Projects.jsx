@@ -48,6 +48,7 @@ useEffect(() => {
      setAbout(false)
     }
   }, [inView])
+ 
   return (
     <div ref={ref} className=" mt-32 flex flex-col w-full h-fit text-[#f9e8e8]">
         {
