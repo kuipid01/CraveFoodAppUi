@@ -5,7 +5,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { storage } from "../firebase";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
@@ -17,10 +17,16 @@ const Dashboard = () => {
   const [inputTags, setInputTags] = useState("");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [projectImageFile, setProjectImage] = useState(null);
+  const [projectImageFile, setProjectImage] = useState();
   const [projectLink, setProjectLink] = useState('')
+  const fileInputRef = useRef(null);
   const handleImageUpload = (e) => {
-    setProjectImage(e.target.files[0]);
+    const file = fileInputRef.current.files[0];
+    if (!file) {
+      return; // No file selected, do nothing
+    }
+    setProjectImage(file);
+    console.log(projectImageFile)
     if (projectImageFile) {
       console.log("clicked");
       // // const storage = getStorage();
@@ -59,6 +65,11 @@ const Dashboard = () => {
       );
     }
   };
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    // Trigger file input manually
+    fileInputRef.current.click();
+  };
 
   const handleAddPost = async (e) => {
     e.preventDefault();
@@ -82,6 +93,7 @@ const Dashboard = () => {
     </div>
     </div>
   }
+
   if (loading) return <LoadingState/>
   return (
 
@@ -125,13 +137,20 @@ const Dashboard = () => {
           ></textarea>
         </div>
         <div className="w-full">
-          <input
-            onChange={(e) => handleImageUpload(e)}
-            className="border-b w-full cursor-pointer outline-none border-gray-400 p-2 bg-transparent"
-            type="file"
-            name="file"
-            id="file"
-          />
+        <button
+        onClick={handleButtonClick}
+        className="border-b w-full cursor-pointer outline-none border-gray-400 p-2 bg-transparent"
+      >
+        Choose Image
+      </button>
+      <input
+        onChange={handleImageUpload}
+        ref={fileInputRef}
+        className="hidden"
+        type="file"
+        name="file"
+        id="file"
+      />
         </div>
         <button
           disabled={uploading}

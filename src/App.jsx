@@ -76,7 +76,7 @@ return (
             <p> Projects</p>{" "}
          
           </div>{" "}
-          
+       
         </div>
      
         <div className=" flex gap-3 mt-10 ">
