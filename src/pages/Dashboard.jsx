@@ -11,28 +11,26 @@ import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
     const navigate = useNavigate()
-  const [projectTitle , setProjectName] = useState("");
+  const [projectTitle, setProjectName] = useState("");
   const [projectDescription, setProjectDesc] = useState("");
   const [projectImage, setImageUrl] = useState("");
   const [inputTags, setInputTags] = useState("");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [projectImageFile, setProjectImage] = useState();
-  const [projectLink, setProjectLink] = useState('')
   const fileInputRef = useRef(null);
-  const handleImageUpload = (e) => {
+
+  const handleImageUpload = () => {
     const file = fileInputRef.current.files[0];
     if (!file) {
       return; // No file selected, do nothing
     }
     setProjectImage(file);
-    console.log(projectImageFile)
-    if (projectImageFile) {
-      console.log("clicked");
-      // // const storage = getStorage();
-      const storageRef = ref(storage, `projectImages/${projectImageFile.name}`);
 
-      const uploadTask = uploadBytesResumable(storageRef, projectImageFile);
+    if (fileInputRef.current) {
+      const storageRef = ref(storage, `projectImages/${file.name}`);
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
         "state_changed",
@@ -56,45 +54,51 @@ const Dashboard = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log("File available at", downloadURL);
-
             setImageUrl(downloadURL);
-
             setUploading(false);
           });
         }
       );
     }
   };
-  const handleButtonClick = (e) => {
-    e.preventDefault();
+
+  const handleButtonClick = () => {
     // Trigger file input manually
-    fileInputRef.current.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   const handleAddPost = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     const projectTags = inputTags.split(",");
     try {
-       
-        const response = await axios.post('https://devkuipid.onrender.com/project/', {projectLink,projectTitle,projectDescription,projectImage,projectTags});
-        console.log('Response:', response.data);
-        setLoading(false)
-        navigate('/')
-        // Handle the response or perform any necessary actions
-      } catch (error) {
-        console.error('Error:', error);
-        // Handle the error or display an error message
-      }
+      const response = await axios.post('https://devkuipid.onrender.com/project/', {
+        projectLink,
+        projectTitle,
+        projectDescription,
+        projectImage,
+        projectTags
+      });
+      console.log('Response:', response.data);
+      setLoading(false);
+      navigate('/');
+      // Handle the response or perform any necessary actions
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle the error or display an error message
+    }
   };
-  const LoadingState = () => {
-    <div className="w-full h-fit min-h-[300px] bg-transparent flex justify-center  items-center ">
-    <div className="w-[100px] h-[100px] border  rounded-full animate-pulse">
-    </div>
-    </div>
-  }
 
-  if (loading) return <LoadingState/>
+  const LoadingState = () => (
+    <div className="w-full h-fit min-h-[300px] bg-transparent flex justify-center items-center ">
+      <div className="w-[100px] h-[100px] border  rounded-full animate-pulse"></div>
+    </div>
+  );
+
+  if (loading) return <LoadingState />;
+
   return (
 
   
